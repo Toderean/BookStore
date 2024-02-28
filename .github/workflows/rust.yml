@@ -27,9 +27,11 @@ jobs:
           - tests::tests::test_sell_book
           - tests::tests::test_sell_book_2
           - tests::tests::test_invalid_json_file
+          - tests::tests::test_invalid_json_file_2
           - tests::tests::test_update_book
           - tests::tests::test_remove_book
           - tests::tests::test_sell_more_than_available
+          - tests::tests::test_sell_more_than_available_2
 
     steps:
     - uses: actions/checkout@v3
