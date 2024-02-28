@@ -34,9 +34,7 @@ jobs:
           - tests::tests::test_sell_more_than_available_2
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      run: cargo build --verbose
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #V.4.1.1
     - name: Install nextest
       run: cargo install cargo-nextest --locked
     - name: Run ${{ matrix.test_name }} test
