@@ -54,3 +54,21 @@ jobs:
         with:
           jobs: ${{ toJson(needs) }}
           summary_print: "true"
+  merge-check:
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Add your job that checks if the build was successful
+
+      # For example, if using a script:
+      - name: Check Build Status
+        run: |
+          if [ ${{ job.status }} != 'success' ]; then
+            echo "Build failed, PR cannot be merged."
+            exit 1
+          fi
