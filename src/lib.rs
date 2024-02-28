@@ -10,6 +10,7 @@ use inventory::Inventory;
 pub mod book;
 pub mod consts;
 pub mod inventory;
+mod tests;
 
 pub fn print_display() {
     println!("  If you want to display the books ordered by some criteria just enter the following keys:");
