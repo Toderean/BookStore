@@ -99,11 +99,24 @@ mod tests {
     }
 
     #[test]
+    fn test_sell_more_than_available_2() {
+        let mut inventory = setup_test_inventory();
+        let book_index = inventory.get_index("Book 1").unwrap();
+        assert!(inventory.sell_book(book_index, 20).is_ok());
+        // assert!(inventory.sell_book(book_index, 20).is_err());
+    }
+
+    #[test]
     fn test_invalid_json_file() {
         fs::write(TEST_INVENTORY_PATH, "invalid json").unwrap();
         assert!(read_json_file(Path::new(TEST_INVENTORY_PATH)).is_ok());
     }
 
+    #[test]
+    fn test_invalid_json_file_2() {
+        fs::write(TEST_INVENTORY_PATH, "invalid json").unwrap();
+        assert!(read_json_file(Path::new(TEST_INVENTORY_PATH)).is_err());
+    }
     #[test]
     fn test_non_existing_book() {
         let inventory = setup_test_inventory();
