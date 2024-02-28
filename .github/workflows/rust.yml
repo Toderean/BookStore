@@ -2,9 +2,11 @@ name: Rust
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - "main"
 
 env:
   CARGO_TERM_COLOR: always
@@ -14,9 +16,26 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        test_name:
+          - tests::tests::test_add_book
+          - tests::tests::test_add_max_capacity
+          - tests::tests::test_display_books
+          - tests::tests::test_get_index
+          - tests::tests::test_non_existing_book
+          - tests::tests::test_sell_book
+          - tests::tests::test_sell_book_2
+          - tests::tests::test_invalid_json_file
+          - tests::tests::test_update_book
+          - tests::tests::test_remove_book
+          - tests::tests::test_sell_more_than_available
+
     steps:
     - uses: actions/checkout@v3
     - name: Build
       run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+    - name: Install nextest
+      run: cargo install cargo-nextest --locked
+    - name: Run ${{ matrix.test_name }} test
+      run: cargo nextest run ${{ matrix.test_name }} --verbose
