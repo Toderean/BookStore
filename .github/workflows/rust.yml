@@ -40,3 +40,17 @@ jobs:
       run: cargo install cargo-nextest --locked
     - name: Run ${{ matrix.test_name }} test
       run: cargo nextest run ${{ matrix.test_name }} --verbose
+
+  check-jobs:
+    name: Check Jobs
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - build
+    steps:
+      - name: Check Jobs
+        id: check_jobs
+        uses: stacks-network/actions/check-jobs-status@main
+        with:
+          jobs: ${{ toJson(needs) }}
+          summary_print: "true"
