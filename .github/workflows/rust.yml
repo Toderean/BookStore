@@ -31,29 +31,29 @@ jobs:
           }
 
           #Read current version from manifest
-          if [ ! -f "{{ variables.changes_path }}/{{ variables.manifest_name }}" ]; then
-              echo "Error: File '{{ variables.changes_path }}/{{ variables.manifest_name }}' not found."
+          if [ ! -f "{{ changes_path }}/{{ manifest_name }}" ]; then
+              echo "Error: File '{{ changes_path }}/{{ manifest_name }}' not found."
               exit 1
           fi
           
-          version=$(grep '^version' "{{ variables.changes_path }}/{{ variables.manifest_name }}" | cut -d '"' -f 2)
+          version=$(grep '^version' "{{ changes_path }}/{{ manifest_name }}" | cut -d '"' -f 2)
           
           if [ -z "$version" ]; then
-              echo "Error: Version not found in '{{ variables.changes_path }}/{{ variables.manifest_name }}'."
+              echo "Error: Version not found in '{{ changes_path }}/{{ manifest_name }}'."
               exit 1
           fi
           echo "$version"
           
-          cd "{{variables.changes path}}"
-          older_commit=$(git log --reverse --pretty=format:"%H" --"{{variables.manifest_name}}" | tail -n 1)
+          cd "{{changes path}}"
+          older_commit=$(git log --reverse --pretty=format:"%H" --"{{manifest_name}}" | tail -n 1)
           echo "$older_commit"
 
           commit_hash="{{older_commit.stdout}}"
-          cd "{{variables.changes_path}}"
-          older_version=$(git show $commit_hash:{{variables.manifest_name}} | grep '^version' | cut -d '"' -f 2)
+          cd "{{changes_path}}"
+          older_version=$(git show $commit_hash:{{manifest_name}} | grep '^version' | cut -d '"' -f 2)
           echo "$version"
 
-          compare_versions "{{ variables.new_version }}" "{{ variables.old_version }}"
+          compare_versions "{{ new_version }}" "{{ old_version }}"
           result=$?
 
           # Check the result and print accordingly
