@@ -23,9 +23,7 @@ jobs:
 
               # Compare major, minor, and patch versions
               for i in {0..2}; do
-                  if [ "${new_version_array[i]}" -gt "${old_version_array[i]}" ]; then
-                      return 0  # New version is greater
-                  elif [ "${new_version_array[i]}" -lt "${old_version_array[i]}" ]; then
+                  if [ "${new_version_array[i]}" -lt "${old_version_array[i]}" ]; then
                       return 1  # Old version is greater
                   fi
               done
