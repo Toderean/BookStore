@@ -8,6 +8,9 @@ jobs:
   compare_versions:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #V.4.1.1 
+        
       - name: Compare Versions
         run: |
           changes_path="crates/book_store"
@@ -24,6 +27,7 @@ jobs:
               # Compare major, minor, and patch versions
               for i in {0..2}; do
                   if [ "${new_version_array[i]}" -lt "${old_version_array[i]}" ]; then
+                      echo "$older_version"
                       return 1  # Old version is greater
                   fi
               done
@@ -31,29 +35,28 @@ jobs:
           }
 
           #Read current version from manifest
-          if [ ! -f "${changes_path}/${manifest_name}" ]; then
+          if [ ! -f "$changes_path/$manifest_name} ]; then
               echo "Error: File '${changes_path}/${manifest_name}' not found."
+              echo "ls -all"
               exit 1
           fi
-          
-          version=$(grep '^version' "${changes_path}/${manifest_name}" | cut -d '"' -f 2)
-          
+          version=$(grep '^version' "$changes_path/$manifest_name" | cut -d '"' -f 2)
           if [ -z "$version" ]; then
-              echo "Error: Version not found in '${changes_path}/${manifest_name}'."
+              echo "Error: Version not found in '$changes_path/$manifest_name'."
               exit 1
           fi
           echo "$version"
           
-          cd "${changes path}"
-          older_commit=$(git log --reverse --pretty=format:"%H" --"${manifest_name}" | tail -n 1)
+          cd "$changes path"
+          older_commit=$(git log --reverse --pretty=format:"%H" --"$manifest_name" | tail -n 1)
           echo "$older_commit"
 
-          commit_hash="{{older_commit.stdout}}"
-          cd "{{changes_path}}"
-          older_version=$(git show $commit_hash:{{manifest_name}} | grep '^version' | cut -d '"' -f 2)
+          commit_hash="$older_commit.stdout"
+          cd "${changes_path}"
+          older_version=$(git show $commit_hash:${manifest_name} | grep '^version' | cut -d '"' -f 2)
           echo "$version"
 
-          compare_versions "{{ new_version }}" "{{ old_version }}"
+          compare_versions "${new_version}" "${old_version}"
           result=$?
 
           # Check the result and print accordingly
