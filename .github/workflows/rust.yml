@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #V.4.1.1 
-        
+
       - name: Compare Versions
         run: |
           changes_path="crates/book_store"
@@ -18,12 +18,12 @@ jobs:
           package_updated=false
           new_version="0.0.0"
           old_version="0.0.0"
-
+          
           compare_versions() {
               # Split version numbers into their components
-              IFS='.' read -r -a new_version_array <<< "$new_version"
-              IFS='.' read -r -a old_version_array <<< "$old_version"
-
+              IFS='.' read -ra new_version_array <<< "$new_version"
+              IFS='.' read -ra old_version_array <<< "$old_version"
+          
               # Compare major, minor, and patch versions
               for i in {0..2}; do
                   if [ "${new_version_array[i]}" -lt "${old_version_array[i]}" ]; then
@@ -31,47 +31,44 @@ jobs:
                       return 1  # Old version is greater
                   fi
               done
-              return 2  # Versions are equal
+              return 0  # New version is greater or equal then old version
           }
-
+          
           #Read current version from manifest
-          if [ ! -f "$changes_path/$manifest_name} ]; then
+          if [ ! -f "$changes_path/$manifest_name" ]; then
               echo "Error: File '${changes_path}/${manifest_name}' not found."
               echo "ls -all"
               exit 1
-          fi
-          version=$(grep '^version' "$changes_path/$manifest_name" | cut -d '"' -f 2)
+          fi 
+          version=$(grep 'version' "$changes_path/$manifest_name" | cut -d '"') #grep -e pt regex ma mai uit !!! continua
           if [ -z "$version" ]; then
               echo "Error: Version not found in '$changes_path/$manifest_name'."
               exit 1
           fi
           echo "$version"
           
-          cd "$changes path"
-          older_commit=$(git log --reverse --pretty=format:"%H" --"$manifest_name" | tail -n 1)
+          cd "$changes_path"
+          older_commit=$(git log --reverse --pretty=format:"%H" "$manifest_name" | tail -n 1)
           echo "$older_commit"
-
-          commit_hash="$older_commit.stdout"
-          cd "${changes_path}"
-          older_version=$(git show $commit_hash:${manifest_name} | grep '^version' | cut -d '"' -f 2)
+          
+          older_version=$(git show $older_commit:"${changes_path}/${manifest_name}" | grep '^version' | cut -d '"')
           echo "$version"
-
+          
           compare_versions "${new_version}" "${old_version}"
           result=$?
-
-          # Check the result and print accordingly
-          if [ $result -eq 0 ]; then
-              echo "New version is greater"
-              package_updated=true
-          elif [ $result -eq 1 ]; then
-              echo "Old version is greater $older_version"
-              exit 1
-          else
-              echo "Versions are equal"
-          fi
           
-
-
-        shell: bash
-        
-        
+          #Check the result and print accordingly
+          case $result in
+              0)
+                  echo "New version is greater"
+                  package_updated=true
+                  ;;
+              1)
+                  echo "Old version is greater $older_version"
+                  exit 1
+                  ;;
+              *)
+                  echo "Unrecognized exit code"
+                  exit $result
+                  ;;
+          esac   
