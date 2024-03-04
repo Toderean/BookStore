@@ -10,11 +10,11 @@ jobs:
     steps:
       - name: Compare Versions
         run: |
-          changes_path = "crates/book_store"
-          manifest_name = "Cargo.toml"
-          package_updated = false
-          new_version = "0.0.0"
-          old_version = "0.0.0"
+          changes_path="crates/book_store"
+          manifest_name="Cargo.toml"
+          package_updated=false
+          new_version="0.0.0"
+          old_version="0.0.0"
 
           compare_versions() {
               # Split version numbers into their components
