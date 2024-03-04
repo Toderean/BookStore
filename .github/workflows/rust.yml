@@ -2,57 +2,78 @@ name: Rust
 
 on:
   workflow_dispatch:
-#  push:
-#    branches:
-#      - "main"
-#  pull_request:
-#    branches:
-#      - "main"
-
-
-env:
-  CARGO_TERM_COLOR: always
+  push:
 
 jobs:
-  build:
-
+  compare_versions:
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        test_name:
-          - tests::tests::test_add_book
-          - tests::tests::test_add_max_capacity
-          - tests::tests::test_display_books
-          - tests::tests::test_get_index
-          - tests::tests::test_non_existing_book
-          - tests::tests::test_sell_book
-          - tests::tests::test_sell_book_2
-          - tests::tests::test_invalid_json_file
-          - tests::tests::test_invalid_json_file_2
-          - tests::tests::test_update_book
-          - tests::tests::test_remove_book
-          - tests::tests::test_sell_more_than_available
-          - tests::tests::test_sell_more_than_available_2
-
     steps:
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #V.4.1.1
-    - name: Install nextest
-      run: cargo install cargo-nextest --locked
-    - name: Run ${{ matrix.test_name }} test
-      run: cargo nextest run ${{ matrix.test_name }} --verbose
+      - name: Compare Versions
+        run: |
+          changes_path = "crates/book_store"
+          manifest_name = "Cargo.toml"
+          package_updated = false
+          new_version = "0.0.0"
+          old_version = "0.0.0"
 
-  check-jobs:
-    name: Check Jobs
-    runs-on: ubuntu-latest
-    if: always()
-    needs:
-      - build
-    steps:
-      - name: Check Jobs
-        id: check_jobs
-        uses: stacks-network/actions/check-jobs-status@main
-        with:
-          jobs: ${{ toJson(needs) }}
-          summary_print: "true"
+          compare_versions() {
+              local new_version=$1
+              local old_version=$2
+
+              # Split version numbers into their components
+              IFS='.' read -r -a new_version_array <<< "$new_version"
+              IFS='.' read -r -a old_version_array <<< "$old_version"
+
+              # Compare major, minor, and patch versions
+              for i in {0..2}; do
+                  if [ "${new_version_array[i]}" -gt "${old_version_array[i]}" ]; then
+                      return 0  # New version is greater
+                  elif [ "${new_version_array[i]}" -lt "${old_version_array[i]}" ]; then
+                      return 1  # Old version is greater
+                  fi
+              done
+              return 2  # Versions are equal
+          }
+
+          #Read current version from manifest
+          if [ ! -f "{{ variables.changes_path }}/{{ variables.manifest_name }}" ]; then
+              echo "Error: File '{{ variables.changes_path }}/{{ variables.manifest_name }}' not found."
+              exit 1
+          fi
+          
+          version=$(grep '^version' "{{ variables.changes_path }}/{{ variables.manifest_name }}" | cut -d '"' -f 2)
+          
+          if [ -z "$version" ]; then
+              echo "Error: Version not found in '{{ variables.changes_path }}/{{ variables.manifest_name }}'."
+              exit 1
+          fi
+          echo "$version"
+          
+          cd "{{variables.changes path}}"
+          older_commit=$(git log --reverse --pretty=format:"%H" --"{{variables.manifest_name}}" | tail -n 1)
+          echo "$older_commit"
+
+          commit_hash="{{older_commit.stdout}}"
+          cd "{{variables.changes_path}}"
+          older_version=$(git show $commit_hash:{{variables.manifest_name}} | grep '^version' | cut -d '"' -f 2)
+          echo "$version"
+
+          compare_versions "{{ variables.new_version }}" "{{ variables.old_version }}"
+          result=$?
+
+          # Check the result and print accordingly
+          if [ $result -eq 0 ]; then
+              echo "New version is greater"
+              package_updated=true
+          elif [ $result -eq 1 ]; then
+              echo "Old version is greater $older_version"
+              exit 1
+          else
+              echo "Versions are equal"
+          fi
+          
+
+
+        shell: bash
+        
+        

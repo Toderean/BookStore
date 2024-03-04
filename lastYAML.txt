@@ -1,0 +1,123 @@
+runs:
+  steps:
+    #compare_versions() {
+    #            local new_version=$1
+    #            local old_version=$2
+    #
+    #            # Split version numbers into their components
+    #            IFS='.' read -r -a new_version_array <<< "$new_version"
+    #            IFS='.' read -r -a old_version_array <<< "$old_version"
+    #
+    #            # Compare major, minor, and patch versions
+    #            for i in {0..2}; do
+    #                if [ "${new_version_array[i]}" -gt "${old_version_array[i]}" ]; then
+    #                    return 0  # New version is greater
+    #                elif [ "${new_version_array[i]}" -lt "${old_version_array[i]}" ]; then
+    #                    return 1  # Old version is greater
+    #                fi
+    #            done
+    #
+    #            return 2  # Versions are equal
+    #}
+    - name: Read current version from manifest
+      command: |
+#        if [ ! -f "{{ variables.changes_path }}/{{ variables.manifest_name }}" ]; then
+#            echo "Error: File '{{ variables.changes_path }}/{{ variables.manifest_name }}' not found."
+#            exit 1
+#        fi
+#
+#        version=$(grep '^version' "{{ variables.changes_path }}/{{ variables.manifest_name }}" | cut -d '"' -f 2)
+#
+#        if [ -z "$version" ]; then
+#            echo "Error: Version not found in '{{ variables.changes_path }}/{{ variables.manifest_name }}'."
+#            exit 1
+#        fi
+#        echo "$version"
+#      read_version {{variables.changes_path}}/{{variables.manifest_name}}
+      register: current_version
+
+    - name : Find older commit with changes in path
+      command : |
+        cd "{{ variables.changes_path }}"
+        older_commit=$(git log --reverse --pretty=format:"%H" -- "{{ variables.manifest_name }}" | tail -n 1)
+        echo "$older_commit"
+      register: older_commit
+
+    - name: Read version from older commit
+      command: |
+        # Read version from older commit
+        commit_hash="{{ older_commit.stdout }}"
+        cd "{{variables.changes_path}}"
+        older_version=$(git show $commit_hash:{{ variables.manifest_name }} | grep '^version' | cut -d '"' -f 2)
+        echo "$version"
+      register: older_version
+
+    - name: Compare versions
+      command: |
+        if [[ $current_version > $older_version ]]; then
+            result="true"
+        else
+            result="false"
+            echo "$result"
+        fi
+        echo "$result"
+      register: version_comparison
+
+    - name: Check if new version is greater
+      command: |
+        greater_check="{{ version_comparison.stdout }}"
+        echo "$greater_check"
+      register: greater_check
+
+    - name: Set package_updated if version is greater
+      set_fact:
+          package_updated: true
+      when: greater_check.stdout == "true"
+
+#env:
+#  CARGO_TERM_COLOR: always
+#
+#jobs:
+#  build:
+#
+#    runs-on: ubuntu-latest
+#
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        test_name:
+#          - tests::tests::test_add_book
+#          - tests::tests::test_add_max_capacity
+#          - tests::tests::test_display_books
+#          - tests::tests::test_get_index
+#          - tests::tests::test_non_existing_book
+#          - tests::tests::test_sell_book
+#          - tests::tests::test_sell_book_2
+#          - tests::tests::test_invalid_json_file
+#          - tests::tests::test_invalid_json_file_2
+#          - tests::tests::test_update_book
+#          - tests::tests::test_remove_book
+#          - tests::tests::test_sell_more_than_available
+#          - tests::tests::test_sell_more_than_available_2
+#
+#    steps:
+#    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #V.4.1.1
+#    - name: Install nextest
+#      run: cargo install cargo-nextest --locked
+#    - name: Run ${{ matrix.test_name }} test
+#      run: cargo nextest run ${{ matrix.test_name }} --verbose
+#
+#  check-jobs:
+#    name: Check Jobs
+#    runs-on: ubuntu-latest
+#    if: always()
+#    needs:
+#      - build
+#    steps:
+#      - name: Check Jobs
+#        id: check_jobs
+#        uses: stacks-network/actions/check-jobs-status@main
+#        with:
+#          jobs: ${{ toJson(needs) }}
+#          summary_print: "true"
+
