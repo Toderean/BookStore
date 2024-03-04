@@ -31,21 +31,21 @@ jobs:
           }
 
           #Read current version from manifest
-          if [ ! -f "{{ changes_path }}/{{ manifest_name }}" ]; then
-              echo "Error: File '{{ changes_path }}/{{ manifest_name }}' not found."
+          if [ ! -f "${changes_path}/${manifest_name}" ]; then
+              echo "Error: File '${changes_path}/${manifest_name}' not found."
               exit 1
           fi
           
-          version=$(grep '^version' "{{ changes_path }}/{{ manifest_name }}" | cut -d '"' -f 2)
+          version=$(grep '^version' "${changes_path}/${manifest_name}" | cut -d '"' -f 2)
           
           if [ -z "$version" ]; then
-              echo "Error: Version not found in '{{ changes_path }}/{{ manifest_name }}'."
+              echo "Error: Version not found in '${changes_path}/${manifest_name}'."
               exit 1
           fi
           echo "$version"
           
-          cd "{{changes path}}"
-          older_commit=$(git log --reverse --pretty=format:"%H" --"{{manifest_name}}" | tail -n 1)
+          cd "${changes path}"
+          older_commit=$(git log --reverse --pretty=format:"%H" --"${manifest_name}" | tail -n 1)
           echo "$older_commit"
 
           commit_hash="{{older_commit.stdout}}"
