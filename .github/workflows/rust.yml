@@ -17,9 +17,6 @@ jobs:
           old_version = "0.0.0"
 
           compare_versions() {
-              local new_version=$1
-              local old_version=$2
-
               # Split version numbers into their components
               IFS='.' read -r -a new_version_array <<< "$new_version"
               IFS='.' read -r -a old_version_array <<< "$old_version"
