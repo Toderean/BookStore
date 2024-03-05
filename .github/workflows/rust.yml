@@ -14,8 +14,8 @@ jobs:
       - name: Compare Versions
         run: |
           last_commit=$(git log -1 --pretty=format:"%h")
-          full_path=$(git diff-tree --no-commit-id --name-only -r ${last_commit})
-          changes_path=echo ${full_path} | cut -d "/" f1 
+          changes_path=$(git diff-tree --no-commit-id --name-only -r ${last_commit})
+          # changes_path=echo ${full_path} | cut -d "/" f1 
           package_type=echo "$changes_path" | awk -F'/' '{print $1}'
           package_updated=false
           new_version="0.0.0"
