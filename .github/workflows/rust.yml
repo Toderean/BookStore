@@ -69,7 +69,14 @@ jobs:
           older_commit=$(git log --reverse --pretty=format:"%H" "$manifest_name" | tail -n 1)
           echo "$older_commit"
           
-          older_version=$(git show $older_commit:"${changes_path}/${manifest_name}" | grep '^version' | cut -d '"')
+          if [$package_type == "crates"]; then
+            version=$(echo 'version = "0.1.0"' | awk -F'"' '{print $2}')
+          elif [$package_type == "packages"]; then
+            version=$(echo 'version = "0.1.0"' | awk -F'"' '{print $4}')
+          else
+            echo "No available version"
+          fi          
+          
           echo "$version"
           
           compare_versions "${new_version}" "${old_version}"
