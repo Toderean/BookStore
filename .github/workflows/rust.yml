@@ -13,12 +13,23 @@ jobs:
 
       - name: Compare Versions
         run: |
-          changes_path="crates/book_store"
-          manifest_name="Cargo.toml"
+          last_commit=git log -1 --format=format:"%H"
+          full_path=git diff-tree --no-commit-id --name-only -r ${last_commit}
+          changes_path=echo ${full_path} | cut -d "/" f1 
+          package_type=echo "$changes_path" | awk -F'/' '{print $1}'
           package_updated=false
           new_version="0.0.0"
           old_version="0.0.0"
           
+          if [$package_type == "crates"]; then
+              manifest_name="Cargo.toml"
+          elif [$package_type == "pacakges"]; then
+              manifest_name="package.json"
+          else
+              echo "Unknown package type"
+              exit 1
+          fi
+
           compare_versions() {
               # Split version numbers into their components
               IFS='.' read -ra new_version_array <<< "$new_version"
@@ -40,7 +51,14 @@ jobs:
               echo "ls -all"
               exit 1
           fi 
-          version=$(grep 'version' "$changes_path/$manifest_name" | cut -d '"') #grep -e pt regex ma mai uit !!! continua
+          if [$package_type == "crates"]; then
+            version=$(echo 'version = "0.1.0"' | awk -F'"' '{print $2}')
+          elif [$package_type == "packages"]; then
+            version=$(echo 'version = "0.1.0"' | awk -F'"' '{print $4}')
+          else
+            echo "No available version"
+          fi
+            
           if [ -z "$version" ]; then
               echo "Error: Version not found in '$changes_path/$manifest_name'."
               exit 1
