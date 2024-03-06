@@ -15,7 +15,7 @@ jobs:
         run: |
           last_commit=$(git log -1 --pretty=format:"%h")
           changes_path=$(git diff-tree --no-commit-id --name-only -r ${last_commit})
-          package_type=$(echo "$changes_path" | awk -F'/' '{print $1}')$
+          package_type=$(echo "$changes_path" | awk -F'/' '{print $1}')
           package_updated=false
           new_version="0.0.0"
           old_version="0.0.0"
