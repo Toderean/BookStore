@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #V.4.1.1 
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #V.4.1.1
+        with:
+          fetch-depth: 0
 
       - name: Compare Versions
         run: |
@@ -21,7 +23,7 @@ jobs:
           package_updated=false
           new_version="0.0.0"
           old_version="0.0.0"
-          
+
           echo "$package_type"
 
           changed_packages=()
@@ -29,11 +31,11 @@ jobs:
           # Loop through each modified folder
           while IFS= read -r changes_path; do
               package_type=$(echo "$changes_path" | awk -F'/' '{print $1}')
-              
+
               case $package_type in
                   "crates" | "packages" )
                       if [ $package_type == "crates" ]; then
-                          manifest_name="Cargo.toml" 
+                          manifest_name="Cargo.toml"
                       else
                           manifest_name="package.json"
                       fi
@@ -43,7 +45,7 @@ jobs:
                   *)
                       continue
                       ;;
-              esac                
+              esac
           done <<< "$full_path"
           echo "${changed_packages[@]}"
 
@@ -52,12 +54,12 @@ jobs:
               echo "No package type found"
               exit 1
           fi
-          
+
           compare_versions() {
               # Split version numbers into their components
               IFS='.' read -ra new_version_array <<< "$new_version"
               IFS='.' read -ra old_version_array <<< "$old_version"
-          
+
               # Compare major, minor, and patch versions
               for i in {0..2}; do
                   if [ "${new_version_array[i]}" -lt "${old_version_array[i]}" ]; then
@@ -67,7 +69,7 @@ jobs:
               done
               return 0  # New version is greater or equal then old version
           }
-          
+
           for changed_package in ${changed_packages[@]}; do
 
               package_type=$(echo "$changed_package" | awk -F'/' '{print $1}')
@@ -77,11 +79,11 @@ jobs:
                   echo "Error: File '${changed_package}' not found."
                   ls -a
                   exit 1
-              fi 
-              
+              fi
+
               case $package_type in
                   "crates")
-                      new_version=$(grep -Eo 'version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"' $changed_package | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')      
+                      new_version=$(grep -Eo 'version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"' $changed_package | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
                       echo "newer version $package_type : $new_version"
                       ;;
                   "packages")
@@ -93,18 +95,18 @@ jobs:
                       exit 1
                       ;;
               esac
-              
-              
+
+
               if [ -z "$new_version" ]; then
                   echo "Error: Version not found in '$changed_package'."
                   exit 1
               fi
               # echo "newer version $package_type = $new_version"
-              
+
               # cd $(echo $changed_package | awk -F'/' '{print $1"/"$2}')
               older_commit=$(git log --reverse --pretty=format:"%h" "$(echo $changed_package | awk -F'/' '{print $1"/"$2}')" | tail -n 2 | head -n 1)
               echo "$older_commit"
-              
+
               case $package_type in
                   "crates")
                       old_version=$(git show $older_commit:$changed_package | grep -Eo 'version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
@@ -118,17 +120,17 @@ jobs:
                       echo "No available version"
                       exit 1
                       ;;
-              esac    
-              
+              esac
+
               if [ -z "$old_version" ]; then
                   echo "Error: Version not found in '$changed_package'."
                   exit 1
               fi
               echo "older version $package_type = $old_version"
-              
+
               compare_versions "${new_version}" "${old_version}"
               result=$?
-              
+
               #Check the result and print accordingly
               case $result in
                   0)
