@@ -62,17 +62,17 @@ jobs:
           
           case $package_type in
               "crates" )
-                new_version=$(echo 'version = "0.1.0"' | awk -F'"' '{print $2}')      
-                echo "newer version $package_type : $new_version"
-                ;;
-            "packages")
-                new_version=$(echo 'version = "0.1.0"' | awk -F'"' '{print $4}')
-                echo "newer version $package_type : $new_version"
-                ;;
-            *)
-                echo "No available version"
-                exit 1
-                ;;
+              new_version=$(grep -Eo 'version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"' $changes_path/$manifest_name| grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')      
+              echo "newer version $package_type : $new_version"
+              ;;
+          "packages")
+              new_version=$(grep -Eo '"version"\s*:\s*"[0-9]+\.[0-9]+\.[0-9]+"' $changes_path/$manifest_name | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+              echo "newer version $package_type : $new_version"
+              ;;
+          *)
+              echo "No available version"
+              exit 1
+              ;;
           esac
           
           
