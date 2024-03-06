@@ -42,7 +42,7 @@ jobs:
               package_type=$(echo "$changes_path" | awk -F'/' '{print $1}')
               
               # Skip ".github" and empty directories
-              if [[ "$package_type" == "." || "$package_type" == ".github" ]]; then
+              if [[ "$package_type" == "." || "$package_type" == ".github" || "$package_type" == " " ]]; then
                   continue
               fi
               
