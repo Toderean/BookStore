@@ -20,7 +20,7 @@ jobs:
           new_version="0.0.0"
           old_version="0.0.0"
           
-          case $result in
+          case $package_type in
           "crates" )
               manifest_name="Cargo.toml"      
               echo "$package_type"
