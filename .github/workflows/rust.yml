@@ -20,14 +20,21 @@ jobs:
           new_version="0.0.0"
           old_version="0.0.0"
           
-          if [ $package_type -eq "crates" ]; then
-              manifest_name="Cargo.toml"
-          elif [ $package_type -eq "pacakges" ]; then
+          case $result in
+          "crates" )
+              manifest_name="Cargo.toml"      
+              echo "$package_type"
+              ;;
+          "pacakges")
               manifest_name="package.json"
-          else
+              echo "$package_type"
+              ;;
+          *)
               echo "Unknown package type"
               exit 1
-          fi
+              ;;
+          esac
+
 
           compare_versions() {
               # Split version numbers into their components
