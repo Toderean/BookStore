@@ -22,21 +22,51 @@ jobs:
           old_version="0.0.0"
           
           echo "$package_type"
-          case $package_type in
-          "crates" )
-              manifest_name="Cargo.toml"      
-              echo "$package_type"
-              ;;
-          "packages")
-              manifest_name="package.json"
-              echo "$package_type"
-              ;;
-          *)
-              echo "Unknown package type"
-              exit 1
-              ;;
-          esac
+          # case $package_type in
+          # "crates" )
+          #     manifest_name="Cargo.toml"      
+          #     echo "$package_type"
+          #     ;;
+          # "packages")
+          #     manifest_name="package.json"
+          #     echo "$package_type"
+          #     ;;
+          # *)
+          #     echo "Unknown package type"
+          #     exit 1
+          #     ;;
+          # esac
           
+          # Loop through each modified folder
+          while IFS= read -r changes_path; do
+              package_type=$(echo "$changes_path" | awk -F'/' '{print $1}')
+              
+              # Skip ".github" and empty directories
+              if [[ "$package_type" == "." || "$package_type" == ".github" ]]; then
+                  continue
+              fi
+              
+              echo "Package type: $package_type"
+              
+              case $package_type in
+                  "crates" )
+                      manifest_name="Cargo.toml"      
+                      ;;
+                  "packages")
+                      manifest_name="package.json"
+                      ;; 
+                  *)
+                      echo "Unknown package type"
+                      exit 1
+                      ;;
+              esac
+              
+              # You can perform further actions based on the package type here
+              
+              # Set package_updated to true if necessary
+              package_updated=true
+              
+          done <<< "$full_path"
           
           compare_versions() {
               # Split version numbers into their components
