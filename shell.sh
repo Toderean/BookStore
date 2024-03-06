@@ -87,16 +87,16 @@
                 # echo "newer version $package_type = $new_version"
                 
                 # cd $(echo $changed_package | awk -F'/' '{print $1"/"$2}')
-                older_commit=$(git log --reverse --pretty=format:"%h" "$(echo $changed_package | awk -F'/' '{print $1"/"$2}')" | tail -n 1)
+                older_commit=$(git log --reverse --pretty=format:"%h" "$(echo $changed_package | awk -F'/' '{print $1"/"$2}')" | tail -n 2 | head -n 1)
                 echo "$older_commit"
                 
                 case $package_type in
                     "crates")
-                        old_version=$(grep -Eo 'version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"' $changed_package | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')      
+                        old_version=$(git show $older_commit:$changed_package | grep -Eo 'version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
                         echo "older version $package_type : $old_version"
                         ;;
                     "packages")
-                        old_version=$(grep -Eo '"version"\s*:\s*"[0-9]+\.[0-9]+\.[0-9]+"' $changed_package | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+                        old_version=$(git show $older_commit:$changed_package | grep -Eo '"version"\s*:\s*"[0-9]+\.[0-9]+\.[0-9]+"' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
                         echo "older version $package_type : $old_version"
                         ;;
                     *)
