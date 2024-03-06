@@ -39,7 +39,7 @@ jobs:
                       else
                           manifest_name="package.json"
                       fi
-                      changed_packages+=$(echo $changes_path | awk -F'/' '{print $1"/"$2}')/$manifest_name
+                      changed_packages+=($(echo $changes_path | awk -F'/' '{print $1"/"$2}')/$manifest_name)
                       package_updated=true
                       ;;
                   *)
