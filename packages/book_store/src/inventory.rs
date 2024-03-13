@@ -61,7 +61,11 @@ impl Inventory {
         Ok(())
     }
 
-    pub fn display(&mut self, criteria: &str, book_position: Option<usize>) -> Result<(), Box<dyn Error>> {
+    pub fn display(
+        &mut self,
+        criteria: &str,
+        book_position: Option<usize>,
+    ) -> Result<(), Box<dyn Error>> {
         match criteria {
             "author" => {
                 println!("Books are sorted by author:\n");
@@ -126,11 +130,14 @@ impl Inventory {
         }
     }
 
-    pub fn sell_book(&mut self, book_index: usize, sell_quantity: u32) -> Result<(), Box<dyn Error>> {
+    pub fn sell_book(
+        &mut self,
+        book_index: usize,
+        sell_quantity: u32,
+    ) -> Result<(), Box<dyn Error>> {
         if &sell_quantity == &self.books[book_index].quantity {
             self.remove(book_index)
-        }
-        else {
+        } else {
             self.books[book_index].quantity -= sell_quantity;
         }
         Ok(())

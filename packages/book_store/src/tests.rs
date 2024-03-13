@@ -1,12 +1,11 @@
 #[cfg(test)]
 mod tests {
-    use std::fs;
-    use std::path::Path;
     use crate::book::Book;
     use crate::consts::TEST_INVENTORY_PATH;
     use crate::inventory::Inventory;
     use crate::read_json_file;
-
+    use std::fs;
+    use std::path::Path;
 
     fn setup_test_inventory() -> Inventory {
         let mut books = Vec::new();
@@ -38,7 +37,10 @@ mod tests {
             30,
         );
         inventory.add(new_book.clone()).unwrap();
-        assert_eq!(inventory.get_index(new_book.title.as_str()),Some(inventory.get_index(new_book.title.as_str()).unwrap()));
+        assert_eq!(
+            inventory.get_index(new_book.title.as_str()),
+            Some(inventory.get_index(new_book.title.as_str()).unwrap())
+        );
     }
 
     #[test]
@@ -54,7 +56,11 @@ mod tests {
         let mut inventory = setup_test_inventory();
         let book_index = inventory.get_index("Book 1").unwrap();
         inventory
-            .update(book_index, String::from("title"), String::from("Updated Book"))
+            .update(
+                book_index,
+                String::from("title"),
+                String::from("Updated Book"),
+            )
             .unwrap();
         let updated_book = inventory.books[book_index].clone();
         assert_eq!(updated_book.title, "Updated Book");
@@ -78,7 +84,7 @@ mod tests {
         assert_eq!(inventory.books[book_index].quantity, initial_quantity - 14);
     }
 
-        #[test]
+    #[test]
     fn test_display_books() {
         let mut inventory = setup_test_inventory();
         assert!(inventory.display("all", None).is_ok());

@@ -62,8 +62,7 @@ fn main() {
                 };
                 loop {
                     println!("\n You can update Title, Author, Genre, Price, Quantity or to exit entering Exit \n");
-                    let field =
-                        get_command("wich field you want to update").to_lowercase();
+                    let field = get_command("wich field you want to update").to_lowercase();
                     match field.as_str() {
                         "title" | "author" | "genre" => loop {
                             let update = get_command(&field);
@@ -161,46 +160,43 @@ fn main() {
                     break;
                 }
             }
-            "sell" => {
-                loop {
-                    inventory.display("all", None).unwrap();
-                    let book_to_sell = get_command("which book you want to sell");
-                    if book_to_sell.as_str() == "exit" {
-                        println!("Exiting sell process...");
-                        break;
-                    }
-                    let book_index = match inventory.get_index(&book_to_sell) {
-                        Some(index) => index,
-                        None => {
-                            println!("This book doesn't exist!\n");
-                            continue;
-                        }
-                    };
-
-                    let book = inventory.books.get(book_index).unwrap();
-
-                    let sell_quantity = loop {
-                        let quantity_input =
-                            get_command("how much you want to sell");
-                        if quantity_input == "exit" {
-                            println!("Exiting sell process...");
-                            break 0;
-                        }
-                        match quantity_input.parse::<u32>() {
-                            Ok(quantity) => {
-                                if book.quantity < quantity {
-                                    println!("Not enough books!");
-                                    continue;
-                                }
-                                break quantity;
-                            }
-                            Err(_) => println!("Enter a valid quantity!"),
-                        }
-                    };
-
-                    inventory.sell_book(book_index, sell_quantity).unwrap();
+            "sell" => loop {
+                inventory.display("all", None).unwrap();
+                let book_to_sell = get_command("which book you want to sell");
+                if book_to_sell.as_str() == "exit" {
+                    println!("Exiting sell process...");
+                    break;
                 }
-            }
+                let book_index = match inventory.get_index(&book_to_sell) {
+                    Some(index) => index,
+                    None => {
+                        println!("This book doesn't exist!\n");
+                        continue;
+                    }
+                };
+
+                let book = inventory.books.get(book_index).unwrap();
+
+                let sell_quantity = loop {
+                    let quantity_input = get_command("how much you want to sell");
+                    if quantity_input == "exit" {
+                        println!("Exiting sell process...");
+                        break 0;
+                    }
+                    match quantity_input.parse::<u32>() {
+                        Ok(quantity) => {
+                            if book.quantity < quantity {
+                                println!("Not enough books!");
+                                continue;
+                            }
+                            break quantity;
+                        }
+                        Err(_) => println!("Enter a valid quantity!"),
+                    }
+                };
+
+                inventory.sell_book(book_index, sell_quantity).unwrap();
+            },
             "save" => {
                 println!("Saving the inventory state...");
                 inventory.save().unwrap();

@@ -22,7 +22,7 @@
                         else
                             manifest_name="package.json"
                         fi
-                        changed_packages+=$(echo $changes_path | awk -F'/' '{print $1"/"$2}')/$manifest_name
+                        changed_packages+=($(echo $changes_path | awk -F'/' '{print $1"/"$2}')/$manifest_name)
                         package_updated=true
                         ;;
                     *)
@@ -55,78 +55,77 @@
             
             for changed_package in ${changed_packages[@]}; do
 
-                package_type=$(echo "$changed_package" | awk -F'/' '{print $1}')
+            package_type=$(echo "$changed_package" | awk -F'/' '{print $1}')
 
-                #Read current version from manifest
-                if [ ! -f "${changed_package}" ]; then
-                    echo "Error: File '${changed_package}' not found."
-                    ls -a
+            #Read current version from manifest
+            if [ ! -f "${changed_package}" ]; then
+                echo "Error: File '${changed_package}' not found."
+                ls -a
+                exit 1
+            fi 
+            
+            case $package_type in
+                "crates")
+                    new_version=$(grep -Eo 'version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"' $changed_package | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')      
+                    echo "newer version $package_type : $new_version"
+                    ;;
+                "packages")
+                    new_version=$(grep -Eo '"version"\s*:\s*"[0-9]+\.[0-9]+\.[0-9]+"' $changed_package | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+                    echo "newer version $package_type : $new_version"
+                    ;;
+                *)
+                    echo "No available version"
                     exit 1
-                fi 
-                
-                case $package_type in
-                    "crates")
-                        new_version=$(grep -Eo 'version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"' $changed_package | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')      
-                        echo "newer version $package_type : $new_version"
-                        ;;
-                    "packages")
-                        new_version=$(grep -Eo '"version"\s*:\s*"[0-9]+\.[0-9]+\.[0-9]+"' $changed_package | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
-                        echo "newer version $package_type : $new_version"
-                        ;;
-                    *)
-                        echo "No available version"
-                        exit 1
-                        ;;
-                esac
-                
-                
-                if [ -z "$new_version" ]; then
-                    echo "Error: Version not found in '$changed_package'."
+                    ;;
+            esac
+            
+            
+            if [ -z "$new_version" ]; then
+                echo "Error: Version not found in '$changed_package'."
+                exit 1
+            fi
+            # echo "newer version $package_type = $new_version"
+            
+            # cd $(echo $changed_package | awk -F'/' '{print $1"/"$2}')
+            older_commit=$(git log --reverse --pretty=format:"%h" "$(echo $changed_package | awk -F'/' '{print $1"/"$2}')" | tail -n 2 | head -n 1)
+            echo "$older_commit"
+            
+            case $package_type in
+                "crates")
+                    old_version=$(git show $older_commit:$changed_package | grep -Eo 'version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+                    echo "older version $package_type : $old_version"
+                    ;;
+                "packages")
+                    old_version=$(git show $older_commit:$changed_package | grep -Eo '"version"\s*:\s*"[0-9]+\.[0-9]+\.[0-9]+"' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+                    echo "older version $package_type : $old_version"
+                    ;;
+                *)
+                    echo "No available version"
                     exit 1
-                fi
-                # echo "newer version $package_type = $new_version"
-                
-                # cd $(echo $changed_package | awk -F'/' '{print $1"/"$2}')
-                older_commit=$(git log --reverse --pretty=format:"%h" "$(echo $changed_package | awk -F'/' '{print $1"/"$2}')" | tail -n 2 | head -n 1)
-                echo "$older_commit"
-                
-                case $package_type in
-                    "crates")
-                        old_version=$(git show $older_commit:$changed_package | grep -Eo 'version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
-                        echo "older version $package_type : $old_version"
-                        ;;
-                    "packages")
-                        old_version=$(git show $older_commit:$changed_package | grep -Eo '"version"\s*:\s*"[0-9]+\.[0-9]+\.[0-9]+"' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
-                        echo "older version $package_type : $old_version"
-                        ;;
-                    *)
-                        echo "No available version"
-                        exit 1
-                        ;;
-                esac    
-                
-                if [ -z "$old_version" ]; then
-                    echo "Error: Version not found in '$changed_package'."
+                    ;;
+            esac    
+            
+            if [ -z "$old_version" ]; then
+                echo "Error: Version not found in '$changed_package'."
+                exit 1
+            fi
+            echo "older version $package_type = $old_version"
+            
+            compare_versions "${new_version}" "${old_version}"
+            result=$?
+            
+            #Check the result and print accordingly
+            case $result in
+                0)
+                    echo "New version is greater or equal"
+                    package_updated=true
+                    ;;
+                1)
+                    echo "Old version is smaller $older_version"
                     exit 1
-                fi
-                echo "older version $package_type = $old_version"
-                
-                compare_versions "${new_version}" "${old_version}"
-                result=$?
-                
-                #Check the result and print accordingly
-                case $result in
-                    0)
-                        echo "New version is greater"
-                        package_updated=true
-                        ;;
-                    1)
-                        echo "Old version is greater or equal $older_version"
-                        exit 1
-                        ;;
-                    *)
-                        echo "Unrecognized exit code"
-                        exit $result
-                        ;;
-                esac
-            done
+                    ;;
+                *)
+                    echo "Unrecognized exit code"
+                    exit $result
+                    ;;
+            esac
