@@ -20,7 +20,6 @@ jobs:
         with:
           file-name: ./packages/another_package/package.json
       - name: Log when changed
-        if: steps.check.outputs.changed == 'true'
         run: |
             echo "${{ steps.check.outputs.commit }}" 
             echo "${{ steps.check.outputs.type }}"
