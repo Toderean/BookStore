@@ -18,7 +18,7 @@ jobs:
         id: check
         uses: EndBug/version-check@53c9309fefac91a21f852d5ca69f33878280d2f5
         with:
-          file-name: ./packages/another_package/package.json
+          file-name: ./packages/test_crate_1/Cargo.toml
       - name: Log when changed
         run: |
             echo "${{ steps.check.outputs.commit }}" 
