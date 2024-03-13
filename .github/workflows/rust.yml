@@ -21,7 +21,11 @@ jobs:
           file-name: ./packages/another_package/package.json
       - name: Log when changed
         if: steps.check.outputs.changed == 'true'
-        run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'    
+        run: |
+            echo "${{ steps.check.outputs.commit }}" 
+            echo "${{ steps.check.outputs.type }}"
+            echo "${{ steps.check.outputs.changed }}" 
+            echo "${{ steps.check.outputs.version }}"
       # - name: Find path (modify)
         # run: |
           # last_commit=$(git log -1 --pretty=format:"%h")
