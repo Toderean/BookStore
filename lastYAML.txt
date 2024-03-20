@@ -1,4 +1,8 @@
+ana are mere
+
+
 # - name: Find path (modify)
+
         # run: |
           # last_commit=$(git log -1 --pretty=format:"%h")
           # echo $last_commit
