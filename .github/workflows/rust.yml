@@ -67,6 +67,6 @@ jobs:
         run: |
           cd "$(echo '${{ needs.check_version_change.outputs.PATH}}' | awk -F'/' '{print $1"/"$2}')"
           npm ci
-          npm publish
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
