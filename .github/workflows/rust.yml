@@ -1,64 +1,82 @@
-name: Rust
+name: Publish Packages
 
-on:
-  workflow_dispatch:
-  push:
+on: push
 
 jobs:
-  compare_versions:
+  check_version_change:
     runs-on: ubuntu-latest
+    outputs:
+      CHANGED: ${{steps.check_version.outputs.changed}}
+      VERSION: ${{steps.check_version.outputs.version}}
+      PATH: ${{steps.set_path.outputs.changed_package_path}}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #V.4.1.1
+      - name: Checkout Code
+        id: checkout_code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           fetch-depth: 0
 
-      - name: Find path (modify)
+      - name: Set Path
+        id: set_path
         run: |
-              last_commit=$(git log -1 --pretty=format:"%h")
-              full_path=$(git diff-tree --no-commit-id --name-only -r ${last_commit})
-              changes_path=$(dirname "$full_path" | awk -F'/' '{print $1"/"$2}')
-              package_types=("package.json" "Cargo.toml")
-              package=""
-          
-              for dir_path in ${changes_path}; do
-                  echo $dir_path 
-                  temp=$(echo "$dir_path" | awk -F'/' '{print $1}')
-                  echo $temp
-                  case $temp in
-                      "packages" )
-                          full_path=$changes_path
-                          ;;
-                      *)
-                          continue
-                          ;;
-                  esac                
-              done
-              
-              cd $dir_path
-              
-              files=$(ls)
-              
-              for package_type in ${package_types[@]}; do
-                      for file in ${files[@]}; do
-                      if [ "${package_type}" == "${file}" ]; then
-                          package=${package_type}
-                          echo $package
-                      fi
-                      done    
-              done
-              full_path_with_package="${full_path}/${package}"
-              echo "FULL_PATH=$full_path_with_package" >> $GITHUB_ENV
+          # Get the paths of changed files
+          changes_paths=$(git diff-tree --no-commit-id --name-only -r "${{ github.sha }}" | awk -F'/' '{print $1"/"$2}')
 
-      - name: Version verification
-        id: check
+          # Manifest names list
+          manifest_names=("package.json")
+
+          # Save the manifest path of the changed package in GitHub env and exit without error
+          for path in ${changes_paths}; do
+            if [[ $path == packages/* ]]; then
+              for manifest in "${manifest_names[@]}"; do
+                if [[ -f $path/$manifest ]]; then
+                  echo "changed_package_path=${path}/${manifest}" >> "$GITHUB_OUTPUT"
+                  echo "package_changed=true" >> "$GITHUB_OUTPUT"
+                  exit 0
+                fi
+              done
+            fi
+          done
+
+          # If we haven't exited yet, no package was changed
+          echo "No package was changed in this commit!"
+          echo "package_changed=false" >> "$GITHUB_OUTPUT"
+
+      - name: Check Version
+        id: check_version
+        if: ${{ steps.set_path.outputs.package_changed == 'true' }}
         uses: EndBug/version-check@53c9309fefac91a21f852d5ca69f33878280d2f5
         with:
-          file-name: ${{ env.FULL_PATH }}
-      - name: Log when changed
-        run: |
-            echo "${{ steps.check.outputs.commit }}" 
-            echo "${{ steps.check.outputs.type }}"
-            echo "${{ steps.check.outputs.changed }}" 
-            echo "${{ steps.check.outputs.version }}"
+          file-name: ${{ steps.set_path.outputs.changed_package_path }}
+
+      # - name: Print Outputs
+      #   id: print_outputs
+      #   if: ${{ steps.set_path.outputs.package_changed == 'true' }}
+      #   run: |
+      #       echo "${{ steps.check_version.outputs.commit }}"
+      #       echo "${{ steps.check_version.outputs.type }}"
+      #       echo "${{ steps.check_version.outputs.changed }}" >> "$GITHUB_OUTPUT"
+      #       echo "${{ steps.check_version.outputs.version }}" >> "$GITHUB_OUTPUT"
+
+  publish_node:
+    runs-on: ubuntu-latest
+    needs: check_version_change
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 #v4.0.2
+        with:
+          node-version: ${{needs.check_version_change.outputs.VERSION}}
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: Publish
+        if: ${{needs.check_version_change.outputs.CHANGED == 'true'}}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd ${{needs.check_version_change.outputs.PATH}}
+          echo "${{ needs.check_version_change.outputs.CHANGED}}"
+          echo "${{ needs.check_version_change.outputs.PATH }}"
+          echo "${{ needs.check_version_change.outputs.VERSION}}" 

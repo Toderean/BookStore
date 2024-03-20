@@ -30,3 +30,6 @@
                     fi
                     done    
             done
+
+        # npm ci
+        # npm publish
