@@ -49,18 +49,10 @@ jobs:
         with:
           file-name: ${{ steps.set_path.outputs.changed_package_path }}
 
-      # - name: Print Outputs
-      #   id: print_outputs
-      #   if: ${{ steps.set_path.outputs.package_changed == 'true' }}
-      #   run: |
-      #       echo "${{ steps.check_version.outputs.commit }}"
-      #       echo "${{ steps.check_version.outputs.type }}"
-      #       echo "${{ steps.check_version.outputs.changed }}" >> "$GITHUB_OUTPUT"
-      #       echo "${{ steps.check_version.outputs.version }}" >> "$GITHUB_OUTPUT"
-
   publish_node:
     runs-on: ubuntu-latest
     needs: check_version_change
+    if: ${{needs.check_version_change.outputs.CHANGED == 'true'}}
     steps:
       - name: Checkout Code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
@@ -68,15 +60,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 #v4.0.2
         with:
-          node-version: ${{needs.check_version_change.outputs.VERSION}}
+          node-version: 20
           registry-url: 'https://registry.npmjs.org'
       
       - name: Publish
-        if: ${{needs.check_version_change.outputs.CHANGED == 'true'}}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
         run: |
-          cd ${{needs.check_version_change.outputs.PATH}}
+          cd "$(echo '${{ needs.check_version_change.outputs.PATH}}' | awk -F'/' '{print $1"/"$2}')"
+          pwd
           echo "${{ needs.check_version_change.outputs.CHANGED}}"
           echo "${{ needs.check_version_change.outputs.PATH }}"
           echo "${{ needs.check_version_change.outputs.VERSION}}" 
