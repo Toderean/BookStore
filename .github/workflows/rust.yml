@@ -60,13 +60,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4 #v4.0.2
         with:
-          node-version: 20
-          registry-url: 'https://registry.npmjs.org'
+          node-version: '18.19.1'
+          registry-url: 'https://registry.npmjs.org/'
       
       - name: Publish
         run: |
           cd "$(echo '${{ needs.check_version_change.outputs.PATH}}' | awk -F'/' '{print $1"/"$2}')"
           npm ci
-          npm publish --access public
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
