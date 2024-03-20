@@ -64,11 +64,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       
       - name: Publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
         run: |
           cd "$(echo '${{ needs.check_version_change.outputs.PATH}}' | awk -F'/' '{print $1"/"$2}')"
-          pwd
-          echo "${{ needs.check_version_change.outputs.CHANGED}}"
-          echo "${{ needs.check_version_change.outputs.PATH }}"
-          echo "${{ needs.check_version_change.outputs.VERSION}}" 
+          npm ci
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
