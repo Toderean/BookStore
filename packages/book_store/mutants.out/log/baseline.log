@@ -1,0 +1,55 @@
+
+*** baseline
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo build --tests --manifest-path /tmp/cargo-mutants-book_store-MpZ23b.tmp/Cargo.toml
+   Compiling proc-macro2 v1.0.78
+   Compiling unicode-ident v1.0.12
+   Compiling serde v1.0.197
+   Compiling serde_json v1.0.114
+   Compiling ryu v1.0.17
+   Compiling itoa v1.0.10
+   Compiling mutants v0.0.3
+   Compiling quote v1.0.35
+   Compiling syn v2.0.50
+   Compiling serde_derive v1.0.197
+   Compiling book_store v1.0.0 (/tmp/cargo-mutants-book_store-MpZ23b.tmp)
+    Finished dev [unoptimized + debuginfo] target(s) in 3.15s
+
+*** result: Success
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --manifest-path /tmp/cargo-mutants-book_store-MpZ23b.tmp/Cargo.toml
+    Finished test [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/book_store-dcbdbf2fee7dd28a)
+
+running 14 tests
+test tests::tests::test_add_max_capacity ... ok
+test tests::tests::test_get_index ... ok
+test tests::tests::test_add_book ... ok
+test tests::tests::test_non_existing_book ... ok
+test tests::tests::test_invalid_json_file_2 ... ok
+test tests::tests::test_display_books ... ok
+test tests::tests::test_remove_book ... ok
+test tests::tests::test_sell_book ... ok
+test tests::tests::test_sell_more_than_available ... ok
+test tests::tests::test_sell_more_than_available_2 ... ok
+test tests::tests::test_sell_book_2 ... ok
+test tests::tests::test_update_book ... ok
+test tests::tests::test_update_book_1 ... ok
+test tests::tests::test_invalid_json_file ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/main.rs (target/debug/deps/book_store-6abf4dbe457a21c4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests book_store
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+*** result: Success

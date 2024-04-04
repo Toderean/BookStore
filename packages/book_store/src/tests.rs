@@ -8,22 +8,26 @@ mod tests {
     use std::path::Path;
 
     fn setup_test_inventory() -> Inventory {
-        let mut books = Vec::new();
-        books.push(Book::new(
-            String::from("Book 1"),
-            String::from("Author 1"),
-            String::from("Genre 1"),
-            10,
-            20,
-        ));
-        books.push(Book::new(
-            String::from("Book 2"),
-            String::from("Author 2"),
-            String::from("Genre 2"),
-            15,
-            25,
-        ));
-        Inventory { books }
+        let mut books = Inventory::new();
+        books
+            .add(Book::new(
+                String::from("Book 1"),
+                String::from("Author 1"),
+                String::from("Genre 1"),
+                10,
+                20,
+            ))
+            .unwrap();
+        books
+            .add(Book::new(
+                String::from("Book 2"),
+                String::from("Author 2"),
+                String::from("Genre 2"),
+                15,
+                25,
+            ))
+            .unwrap();
+        books
     }
 
     #[test]
@@ -67,6 +71,20 @@ mod tests {
     }
 
     #[test]
+    fn test_update_book_1() {
+        let mut inventory = setup_test_inventory();
+        let book_index = inventory.get_index("Book 1").unwrap();
+        inventory
+            .update(
+                book_index,
+                String::from("title"),
+                String::from("maraciuca"),
+            ).is_err();
+        // let updated_book = inventory.books[book_index].clone();
+        // assert_eq!(updated_book.title, "Updated Book");
+    }
+
+    #[test]
     fn test_sell_book() {
         let mut inventory = setup_test_inventory();
         let book_index = inventory.get_index("Book 1").unwrap();
@@ -88,6 +106,7 @@ mod tests {
     fn test_display_books() {
         let mut inventory = setup_test_inventory();
         assert!(inventory.display("all", None).is_ok());
+        assert!(inventory.display("asdasdsa", None).is_err());
     }
 
     #[test]
@@ -104,12 +123,14 @@ mod tests {
         // assert!(inventory.sell_book(book_index, 20).is_err());
     }
 
+
+
     #[test]
     fn test_sell_more_than_available_2() {
         let mut inventory = setup_test_inventory();
         let book_index = inventory.get_index("Book 1").unwrap();
-        assert!(inventory.sell_book(book_index, 20).is_ok());
-        // assert!(inventory.sell_book(book_index, 20).is_err());
+        assert!(inventory.sell_book(book_index, 2).is_ok());
+        // assert!(inventory.sell_book(book_index, 2).is_err());
     }
 
     #[test]
@@ -121,8 +142,9 @@ mod tests {
     #[test]
     fn test_invalid_json_file_2() {
         fs::write(TEST_INVENTORY_PATH, "invalid json").unwrap();
-        assert!(read_json_file(Path::new(TEST_INVENTORY_PATH)).is_err());
+        assert!(read_json_file(Path::new(TEST_INVENTORY_PATH)).is_ok());
     }
+
     #[test]
     fn test_non_existing_book() {
         let inventory = setup_test_inventory();

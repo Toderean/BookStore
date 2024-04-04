@@ -12,6 +12,7 @@ pub mod consts;
 pub mod inventory;
 mod tests;
 
+#[cfg_attr(test, mutants::skip)]
 pub fn print_display() {
     println!("  If you want to display the books ordered by some criteria just enter the following keys:");
     println!("  -price :sort by price");
@@ -22,6 +23,7 @@ pub fn print_display() {
     println!("  -all: display all books");
 }
 
+#[cfg_attr(test, mutants::skip)]
 pub fn print_help() {
     println!("Instructions: ");
     println!("1.To display all the books just enter: (display) \n");

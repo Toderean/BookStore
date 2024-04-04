@@ -4,6 +4,7 @@ use book_store::{
     book::Book, consts::PATH, get_command, print_display, print_help, read_json_file,
 };
 
+
 fn main() {
     let mut inventory = read_json_file(Path::new(PATH)).unwrap();
 

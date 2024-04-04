@@ -1,0 +1,96 @@
+
+*** src/inventory.rs:39:9: replace Inventory::update -> Result<(), Box<dyn Error>> with Ok(())
+
+*** mutation diff:
+--- src/inventory.rs
++++ replace Inventory::update -> Result<(), Box<dyn Error>> with Ok(())
+@@ -31,42 +31,17 @@
+     }
+ 
+     pub fn update(
+         &mut self,
+         index: usize,
+         field: String,
+         update: String,
+     ) -> Result<(), Box<dyn Error>> {
+-        let book = match self.books.get_mut(index) {
+-            None => return Err("None existing book".into()),
+-            Some(b) => b,
+-        };
+-        match field.as_str() {
+-            "title" => book.title = update,
+-            "author" => book.author = update,
+-            "genre" => book.genre = update,
+-            "price" => {
+-                if let Ok(price) = update.parse::<u32>() {
+-                    book.price = price;
+-                } else {
+-                    return Err("Invalid price format".into());
+-                }
+-            }
+-            "quantity" => {
+-                if let Ok(quantity) = update.parse::<u32>() {
+-                    book.quantity = quantity;
+-                } else {
+-                    return Err("Invalid quantity format".into());
+-                }
+-            }
+-            _ => return Err("Invalid field".into()),
+-        }
+-
+-        Ok(())
++        Ok(()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub fn display(
+         &mut self,
+         criteria: &str,
+         book_position: Option<usize>,
+     ) -> Result<(), Box<dyn Error>> {
+         match criteria {
+
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo build --tests --manifest-path /tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml
+   Compiling book_store v1.0.0 (/tmp/cargo-mutants-book_store-jOhHXK.tmp)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.16s
+
+*** result: Success
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --manifest-path /tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml
+    Finished test [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/book_store-dcbdbf2fee7dd28a)
+
+running 14 tests
+test tests::tests::test_invalid_json_file ... ok
+test tests::tests::test_get_index ... ok
+test tests::tests::test_remove_book ... ok
+test tests::tests::test_sell_more_than_available ... ok
+test tests::tests::test_sell_book ... ok
+test tests::tests::test_add_book ... ok
+test tests::tests::test_sell_book_2 ... ok
+test tests::tests::test_display_books ... ok
+test tests::tests::test_invalid_json_file_2 ... ok
+test tests::tests::test_non_existing_book ... ok
+test tests::tests::test_add_max_capacity ... ok
+test tests::tests::test_sell_more_than_available_2 ... ok
+test tests::tests::test_update_book ... FAILED
+test tests::tests::test_update_book_1 ... ok
+
+failures:
+
+---- tests::tests::test_update_book stdout ----
+thread 'tests::tests::test_update_book' panicked at src/tests.rs:70:9:
+assertion `left == right` failed
+  left: "Book 1"
+ right: "Updated Book"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::tests::test_update_book
+
+test result: FAILED. 13 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
+
+*** result: Failure(101)

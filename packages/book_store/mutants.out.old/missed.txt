@@ -1,0 +1,5 @@
+src/book.rs:26:9: replace <impl Display for Book>::fmt -> std::fmt::Result with Ok(Default::default())
+src/inventory.rs:150:9: replace Inventory::save -> Result<(), Box<dyn Error>> with Ok(())
+src/lib.rs:56:5: replace get_command -> String with "xyzzy".into()
+src/main.rs:9:5: replace main with ()
+src/lib.rs:56:5: replace get_command -> String with String::new()

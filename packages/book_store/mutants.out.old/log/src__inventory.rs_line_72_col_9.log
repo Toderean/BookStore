@@ -1,0 +1,130 @@
+
+*** src/inventory.rs:72:9: replace Inventory::display -> Result<(), Box<dyn Error>> with Ok(())
+
+*** mutation diff:
+--- src/inventory.rs
++++ replace Inventory::display -> Result<(), Box<dyn Error>> with Ok(())
+@@ -64,78 +64,17 @@
+         Ok(())
+     }
+ 
+     pub fn display(
+         &mut self,
+         criteria: &str,
+         book_position: Option<usize>,
+     ) -> Result<(), Box<dyn Error>> {
+-        match criteria {
+-            "author" => {
+-                println!("Books are sorted by author:\n");
+-                self.books.sort_by_key(|x| x.author.clone());
+-                for book in &self.books {
+-                    println!("{book}");
+-                }
+-                println!();
+-                Ok(())
+-            }
+-            "title" => {
+-                println!("Books are sorted by title:\n");
+-                self.books.sort_by_key(|x| x.title.clone());
+-                for book in &self.books {
+-                    println!("{book}");
+-                }
+-                println!();
+-                Ok(())
+-            }
+-            "genre" => {
+-                println!("Books are sorted by genre:\n");
+-                self.books.sort_by_key(|x| x.genre.clone());
+-                for book in &self.books {
+-                    println!("{book}");
+-                }
+-                println!();
+-                Ok(())
+-            }
+-            "quantity" => {
+-                println!("Books are sorted by quantity:\n");
+-                self.books.sort_by_key(|x| x.quantity.clone());
+-                for book in &self.books {
+-                    println!("{book}");
+-                }
+-                println!();
+-                Ok(())
+-            }
+-            "price" => {
+-                println!("Books are sorted by price:\n");
+-                self.books.sort_by_key(|x| x.price.clone());
+-                for book in &self.books {
+-                    println!("{book}");
+-                }
+-                println!();
+-                Ok(())
+-            }
+-            "all" => {
+-                println!("Books in the inventory:\n");
+-                for book in &self.books {
+-                    println!("{book}");
+-                }
+-                println!();
+-                Ok(())
+-            }
+-            "book" => {
+-                let book_position = book_position.unwrap_or_default();
+-                println!("Specific book:\n");
+-                println!("{}", &self.books[book_position]);
+-                Ok(())
+-            }
+-            _ => Err("Invalid criteria".into()),
+-        }
++        Ok(()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub fn sell_book(
+         &mut self,
+         book_index: usize,
+         sell_quantity: u32,
+     ) -> Result<(), Box<dyn Error>> {
+         if &sell_quantity == &self.books[book_index].quantity {
+
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo build --tests --manifest-path /tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml
+   Compiling book_store v1.0.0 (/tmp/cargo-mutants-book_store-jOhHXK.tmp)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.17s
+
+*** result: Success
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --manifest-path /tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml
+    Finished test [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/book_store-dcbdbf2fee7dd28a)
+
+running 14 tests
+test tests::tests::test_add_max_capacity ... ok
+test tests::tests::test_add_book ... ok
+test tests::tests::test_get_index ... ok
+test tests::tests::test_non_existing_book ... ok
+test tests::tests::test_invalid_json_file ... ok
+test tests::tests::test_remove_book ... ok
+test tests::tests::test_sell_book_2 ... ok
+test tests::tests::test_invalid_json_file_2 ... ok
+test tests::tests::test_display_books ... FAILED
+test tests::tests::test_sell_book ... ok
+test tests::tests::test_sell_more_than_available ... ok
+test tests::tests::test_sell_more_than_available_2 ... ok
+test tests::tests::test_update_book ... ok
+test tests::tests::test_update_book_1 ... ok
+
+failures:
+
+---- tests::tests::test_display_books stdout ----
+thread 'tests::tests::test_display_books' panicked at src/tests.rs:109:9:
+assertion failed: inventory.display("asdasdsa", None).is_err()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::tests::test_display_books
+
+test result: FAILED. 13 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
+
+*** result: Failure(101)

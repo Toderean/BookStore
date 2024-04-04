@@ -1,0 +1,8 @@
+src/inventory.rs:161:9: replace Inventory::get_index -> Option<usize> with None
+src/inventory.rs:161:9: replace Inventory::get_index -> Option<usize> with Some(0)
+src/inventory.rs:161:9: replace Inventory::get_index -> Option<usize> with Some(1)
+src/inventory.rs:72:9: replace Inventory::display -> Result<(), Box<dyn Error>> with Ok(())
+src/inventory.rs:20:9: replace Inventory::add -> Result<(), Box<dyn Error>> with Ok(())
+src/inventory.rs:30:9: replace Inventory::remove with ()
+src/inventory.rs:141:9: replace Inventory::sell_book -> Result<(), Box<dyn Error>> with Ok(())
+src/inventory.rs:39:9: replace Inventory::update -> Result<(), Box<dyn Error>> with Ok(())

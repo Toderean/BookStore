@@ -1,0 +1,1 @@
+src/lib.rs:37:5: replace read_json_file -> Result<Inventory, Box<dyn Error>> with Ok(Default::default())

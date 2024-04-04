@@ -7,12 +7,15 @@ use std::{
 
 use crate::{book::Book, consts::PATH};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Inventory {
     pub books: Vec<Book>,
 }
 
 impl Inventory {
+    pub fn new() -> Self {
+        Inventory { books: Vec::new() }
+    }
     pub fn add(&mut self, b: Book) -> Result<(), Box<dyn Error>> {
         let max_capacity = 30;
         if self.books.len() < max_capacity {

@@ -1,0 +1,63 @@
+
+*** src/lib.rs:37:5: replace read_json_file -> Result<Inventory, Box<dyn Error>> with Ok(Default::default())
+
+*** mutation diff:
+--- src/lib.rs
++++ replace read_json_file -> Result<Inventory, Box<dyn Error>> with Ok(Default::default())
+@@ -29,32 +29,17 @@
+     println!("1.To display all the books just enter: (display) \n");
+     println!("2.If you want to add a new book in inventory just enter keyword (add) followed by the necessary fields (title,author,genre,quantity,price).\n");
+     println!("3.If you want to delete a book from the inventory just enter the keyword (remove) followed by the name of the book you want to delete.\n");
+     println!("4.If you want to update a book you'll need to enter the keyword (update) followd by the title in the and the new fields updated (title,author,genre,quantity,price).\n");
+     println!("5.To sell a book you'll need to enter keyword (sell) followed by fields of a book (title,author,genre,quantity,price) and finally insert the quantity you want to sell.\n")
+ }
+ 
+ pub fn read_json_file(file_path: &Path) -> Result<Inventory, Box<dyn Error>> {
+-    let mut file = OpenOptions::new()
+-        .read(true)
+-        .write(true)
+-        .create(true)
+-        .open(file_path)?;
+-
+-    let mut contents = String::new();
+-
+-    file.read_to_string(&mut contents)?;
+-
+-    let data = match serde_json::from_str::<Inventory>(&contents) {
+-        Ok(inventory) => inventory,
+-        Err(_) => Inventory { books: vec![] },
+-    };
+-
+-    Ok(data)
++    Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ pub fn get_command(command: &str) -> String {
+     print!("Enter a command {}: ", command);
+     std::io::stdout().flush().unwrap();
+ 
+     let mut input = String::new();
+     std::io::stdin().read_line(&mut input).unwrap();
+
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo build --tests --manifest-path /tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml
+   Compiling book_store v1.0.0 (/tmp/cargo-mutants-book_store-jOhHXK.tmp)
+error[E0277]: the trait bound `Inventory: Default` is not satisfied
+  --> src/lib.rs:37:8
+   |
+37 |     Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+   |        ^^^^^^^^^^^^^^^^ the trait `Default` is not implemented for `Inventory`
+   |
+help: consider annotating `Inventory` with `#[derive(Default)]`
+  --> src/inventory.rs:11:1
+   |
+11 + #[derive(Default)]
+12 | pub struct Inventory {
+   |
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `book_store` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `book_store` (lib test) due to 1 previous error
+
+*** result: Failure(101)

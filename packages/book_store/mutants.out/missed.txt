@@ -1,0 +1,6 @@
+src/lib.rs:37:5: replace read_json_file -> Result<Inventory, Box<dyn Error>> with Ok(Default::default())
+src/lib.rs:56:5: replace get_command -> String with "xyzzy".into()
+src/lib.rs:56:5: replace get_command -> String with String::new()
+src/book.rs:26:9: replace <impl Display for Book>::fmt -> std::fmt::Result with Ok(Default::default())
+src/inventory.rs:150:9: replace Inventory::save -> Result<(), Box<dyn Error>> with Ok(())
+src/main.rs:9:5: replace main with ()

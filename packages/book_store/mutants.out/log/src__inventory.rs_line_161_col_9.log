@@ -1,0 +1,107 @@
+
+*** src/inventory.rs:161:9: replace Inventory::get_index -> Option<usize> with None
+
+*** mutation diff:
+--- src/inventory.rs
++++ replace Inventory::get_index -> Option<usize> with None
+@@ -153,13 +153,11 @@
+         path.seek(std::io::SeekFrom::Start(0))?;
+         path.set_len(0)?;
+         path.write_all(&serialized.as_bytes())?;
+ 
+         Ok(())
+     }
+ 
+     pub fn get_index(&self, book: &str) -> Option<usize> {
+-        self.books
+-            .iter()
+-            .position(|x| x.title.to_lowercase() == book.to_lowercase())
++        None /* ~ changed by cargo-mutants ~ */
+     }
+ }
+
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo build --tests --manifest-path /tmp/cargo-mutants-book_store-MpZ23b.tmp/Cargo.toml
+   Compiling book_store v1.0.0 (/tmp/cargo-mutants-book_store-MpZ23b.tmp)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.19s
+
+*** result: Success
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --manifest-path /tmp/cargo-mutants-book_store-MpZ23b.tmp/Cargo.toml
+    Finished test [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/book_store-dcbdbf2fee7dd28a)
+
+running 14 tests
+test tests::tests::test_non_existing_book ... ok
+test tests::tests::test_add_max_capacity ... ok
+test tests::tests::test_get_index ... FAILED
+test tests::tests::test_invalid_json_file_2 ... ok
+test tests::tests::test_add_book ... FAILED
+test tests::tests::test_display_books ... ok
+test tests::tests::test_remove_book ... FAILED
+test tests::tests::test_sell_book ... FAILED
+test tests::tests::test_sell_more_than_available ... FAILED
+test tests::tests::test_invalid_json_file ... ok
+test tests::tests::test_update_book ... FAILED
+test tests::tests::test_sell_more_than_available_2 ... FAILED
+test tests::tests::test_sell_book_2 ... FAILED
+test tests::tests::test_update_book_1 ... FAILED
+
+failures:
+
+---- tests::tests::test_get_index stdout ----
+thread 'tests::tests::test_get_index' panicked at src/tests.rs:115:9:
+assertion `left == right` failed
+  left: None
+ right: Some(0)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- tests::tests::test_add_book stdout ----
+thread 'tests::tests::test_add_book' panicked at src/tests.rs:46:63:
+called `Option::unwrap()` on a `None` value
+
+---- tests::tests::test_remove_book stdout ----
+thread 'tests::tests::test_remove_book' panicked at src/tests.rs:53:56:
+called `Option::unwrap()` on a `None` value
+
+---- tests::tests::test_sell_book stdout ----
+thread 'tests::tests::test_sell_book' panicked at src/tests.rs:90:56:
+called `Option::unwrap()` on a `None` value
+
+---- tests::tests::test_sell_more_than_available stdout ----
+thread 'tests::tests::test_sell_more_than_available' panicked at src/tests.rs:121:56:
+called `Option::unwrap()` on a `None` value
+
+---- tests::tests::test_update_book stdout ----
+thread 'tests::tests::test_update_book' panicked at src/tests.rs:61:56:
+called `Option::unwrap()` on a `None` value
+
+---- tests::tests::test_sell_more_than_available_2 stdout ----
+thread 'tests::tests::test_sell_more_than_available_2' panicked at src/tests.rs:131:56:
+called `Option::unwrap()` on a `None` value
+
+---- tests::tests::test_sell_book_2 stdout ----
+thread 'tests::tests::test_sell_book_2' panicked at src/tests.rs:99:56:
+called `Option::unwrap()` on a `None` value
+
+---- tests::tests::test_update_book_1 stdout ----
+thread 'tests::tests::test_update_book_1' panicked at src/tests.rs:76:56:
+called `Option::unwrap()` on a `None` value
+
+
+failures:
+    tests::tests::test_add_book
+    tests::tests::test_get_index
+    tests::tests::test_remove_book
+    tests::tests::test_sell_book
+    tests::tests::test_sell_book_2
+    tests::tests::test_sell_more_than_available
+    tests::tests::test_sell_more_than_available_2
+    tests::tests::test_update_book
+    tests::tests::test_update_book_1
+
+test result: FAILED. 5 passed; 9 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
+
+*** result: Failure(101)

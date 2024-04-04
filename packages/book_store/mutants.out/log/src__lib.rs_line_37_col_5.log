@@ -1,0 +1,84 @@
+
+*** src/lib.rs:37:5: replace read_json_file -> Result<Inventory, Box<dyn Error>> with Ok(Default::default())
+
+*** mutation diff:
+--- src/lib.rs
++++ replace read_json_file -> Result<Inventory, Box<dyn Error>> with Ok(Default::default())
+@@ -29,32 +29,17 @@
+     println!("1.To display all the books just enter: (display) \n");
+     println!("2.If you want to add a new book in inventory just enter keyword (add) followed by the necessary fields (title,author,genre,quantity,price).\n");
+     println!("3.If you want to delete a book from the inventory just enter the keyword (remove) followed by the name of the book you want to delete.\n");
+     println!("4.If you want to update a book you'll need to enter the keyword (update) followd by the title in the and the new fields updated (title,author,genre,quantity,price).\n");
+     println!("5.To sell a book you'll need to enter keyword (sell) followed by fields of a book (title,author,genre,quantity,price) and finally insert the quantity you want to sell.\n")
+ }
+ 
+ pub fn read_json_file(file_path: &Path) -> Result<Inventory, Box<dyn Error>> {
+-    let mut file = OpenOptions::new()
+-        .read(true)
+-        .write(true)
+-        .create(true)
+-        .open(file_path)?;
+-
+-    let mut contents = String::new();
+-
+-    file.read_to_string(&mut contents)?;
+-
+-    let data = match serde_json::from_str::<Inventory>(&contents) {
+-        Ok(inventory) => inventory,
+-        Err(_) => Inventory { books: vec![] },
+-    };
+-
+-    Ok(data)
++    Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ pub fn get_command(command: &str) -> String {
+     print!("Enter a command {}: ", command);
+     std::io::stdout().flush().unwrap();
+ 
+     let mut input = String::new();
+     std::io::stdin().read_line(&mut input).unwrap();
+
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo build --tests --manifest-path /tmp/cargo-mutants-book_store-MpZ23b.tmp/Cargo.toml
+   Compiling book_store v1.0.0 (/tmp/cargo-mutants-book_store-MpZ23b.tmp)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.16s
+
+*** result: Success
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --manifest-path /tmp/cargo-mutants-book_store-MpZ23b.tmp/Cargo.toml
+    Finished test [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/book_store-dcbdbf2fee7dd28a)
+
+running 14 tests
+test tests::tests::test_display_books ... ok
+test tests::tests::test_add_book ... ok
+test tests::tests::test_invalid_json_file_2 ... ok
+test tests::tests::test_add_max_capacity ... ok
+test tests::tests::test_get_index ... ok
+test tests::tests::test_non_existing_book ... ok
+test tests::tests::test_invalid_json_file ... ok
+test tests::tests::test_remove_book ... ok
+test tests::tests::test_sell_book_2 ... ok
+test tests::tests::test_sell_book ... ok
+test tests::tests::test_sell_more_than_available_2 ... ok
+test tests::tests::test_sell_more_than_available ... ok
+test tests::tests::test_update_book ... ok
+test tests::tests::test_update_book_1 ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/book_store-6abf4dbe457a21c4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests book_store
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+*** result: Success
