@@ -1,0 +1,69 @@
+
+*** src/lib.rs:56:5: replace get_command -> String with "xyzzy".into()
+
+*** mutation diff:
+--- src/lib.rs
++++ replace get_command -> String with "xyzzy".into()
+@@ -48,17 +48,10 @@
+         Ok(inventory) => inventory,
+         Err(_) => Inventory { books: vec![] },
+     };
+ 
+     Ok(data)
+ }
+ 
+ pub fn get_command(command: &str) -> String {
+-    print!("Enter a command {}: ", command);
+-    std::io::stdout().flush().unwrap();
+-
+-    let mut input = String::new();
+-    std::io::stdin().read_line(&mut input).unwrap();
+-
+-    let input = input.trim().to_string();
+-    input
++    "xyzzy".into() /* ~ changed by cargo-mutants ~ */
+ }
+
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo build --tests --manifest-path /tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml
+   Compiling book_store v1.0.0 (/tmp/cargo-mutants-book_store-jOhHXK.tmp)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.17s
+
+*** result: Success
+
+*** /home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --manifest-path /tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml
+    Finished test [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/book_store-dcbdbf2fee7dd28a)
+
+running 14 tests
+test tests::tests::test_add_max_capacity ... ok
+test tests::tests::test_get_index ... ok
+test tests::tests::test_non_existing_book ... ok
+test tests::tests::test_remove_book ... ok
+test tests::tests::test_add_book ... ok
+test tests::tests::test_display_books ... ok
+test tests::tests::test_sell_book_2 ... ok
+test tests::tests::test_sell_book ... ok
+test tests::tests::test_update_book ... ok
+test tests::tests::test_sell_more_than_available ... ok
+test tests::tests::test_sell_more_than_available_2 ... ok
+test tests::tests::test_invalid_json_file ... ok
+test tests::tests::test_update_book_1 ... ok
+test tests::tests::test_invalid_json_file_2 ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/book_store-6abf4dbe457a21c4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests book_store
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+*** result: Success

@@ -1,0 +1,902 @@
+{
+  "outcomes": [
+    {
+      "scenario": "Baseline",
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/baseline.log",
+      "summary": "Success",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 3.108457567,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050719767,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/inventory.rs",
+          "function": {
+            "function_name": "Inventory::update",
+            "return_type": "-> Result<(), Box<dyn Error>>",
+            "span": {
+              "start": {
+                "line": 33,
+                "column": 5
+              },
+              "end": {
+                "line": 65,
+                "column": 6
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 39,
+              "column": 9
+            },
+            "end": {
+              "line": 64,
+              "column": 15
+            }
+          },
+          "replacement": "Ok(())",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__inventory.rs_line_39_col_9.log",
+      "summary": "CaughtMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.20117428,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050638863,
+          "process_status": {
+            "Failure": 101
+          },
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/inventory.rs",
+          "function": {
+            "function_name": "Inventory::display",
+            "return_type": "-> Result<(), Box<dyn Error>>",
+            "span": {
+              "start": {
+                "line": 67,
+                "column": 5
+              },
+              "end": {
+                "line": 134,
+                "column": 6
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 72,
+              "column": 9
+            },
+            "end": {
+              "line": 133,
+              "column": 10
+            }
+          },
+          "replacement": "Ok(())",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__inventory.rs_line_72_col_9.log",
+      "summary": "CaughtMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.200919694,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050813683,
+          "process_status": {
+            "Failure": 101
+          },
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/book.rs",
+          "function": {
+            "function_name": "<impl Display for Book>::fmt",
+            "return_type": "-> std::fmt::Result",
+            "span": {
+              "start": {
+                "line": 25,
+                "column": 5
+              },
+              "end": {
+                "line": 31,
+                "column": 6
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 26,
+              "column": 9
+            },
+            "end": {
+              "line": 30,
+              "column": 10
+            }
+          },
+          "replacement": "Ok(Default::default())",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__book.rs_line_26_col_9.log",
+      "summary": "MissedMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.251159486,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050835312,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/inventory.rs",
+          "function": {
+            "function_name": "Inventory::save",
+            "return_type": "-> Result<(), Box<dyn Error>>",
+            "span": {
+              "start": {
+                "line": 149,
+                "column": 5
+              },
+              "end": {
+                "line": 158,
+                "column": 6
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 150,
+              "column": 9
+            },
+            "end": {
+              "line": 157,
+              "column": 15
+            }
+          },
+          "replacement": "Ok(())",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__inventory.rs_line_150_col_9.log",
+      "summary": "MissedMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.201032621,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050689417,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/inventory.rs",
+          "function": {
+            "function_name": "Inventory::sell_book",
+            "return_type": "-> Result<(), Box<dyn Error>>",
+            "span": {
+              "start": {
+                "line": 136,
+                "column": 5
+              },
+              "end": {
+                "line": 147,
+                "column": 6
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 141,
+              "column": 9
+            },
+            "end": {
+              "line": 146,
+              "column": 15
+            }
+          },
+          "replacement": "Ok(())",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__inventory.rs_line_141_col_9.log",
+      "summary": "CaughtMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.200998214,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050643913,
+          "process_status": {
+            "Failure": 101
+          },
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/lib.rs",
+          "function": {
+            "function_name": "get_command",
+            "return_type": "-> String",
+            "span": {
+              "start": {
+                "line": 55,
+                "column": 1
+              },
+              "end": {
+                "line": 64,
+                "column": 2
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 56,
+              "column": 5
+            },
+            "end": {
+              "line": 63,
+              "column": 10
+            }
+          },
+          "replacement": "\"xyzzy\".into()",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__lib.rs_line_56_col_5.log",
+      "summary": "MissedMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.200890651,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050766503,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/lib.rs",
+          "function": {
+            "function_name": "read_json_file",
+            "return_type": "-> Result<Inventory, Box<dyn Error>>",
+            "span": {
+              "start": {
+                "line": 36,
+                "column": 1
+              },
+              "end": {
+                "line": 53,
+                "column": 2
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 37,
+              "column": 5
+            },
+            "end": {
+              "line": 52,
+              "column": 13
+            }
+          },
+          "replacement": "Ok(Default::default())",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__lib.rs_line_37_col_5.log",
+      "summary": "Unviable",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.05079535,
+          "process_status": {
+            "Failure": 101
+          },
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/inventory.rs",
+          "function": {
+            "function_name": "Inventory::get_index",
+            "return_type": "-> Option<usize>",
+            "span": {
+              "start": {
+                "line": 160,
+                "column": 5
+              },
+              "end": {
+                "line": 164,
+                "column": 6
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 161,
+              "column": 9
+            },
+            "end": {
+              "line": 163,
+              "column": 73
+            }
+          },
+          "replacement": "None",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__inventory.rs_line_161_col_9.log",
+      "summary": "CaughtMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.201101393,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050725077,
+          "process_status": {
+            "Failure": 101
+          },
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/inventory.rs",
+          "function": {
+            "function_name": "Inventory::add",
+            "return_type": "-> Result<(), Box<dyn Error>>",
+            "span": {
+              "start": {
+                "line": 19,
+                "column": 5
+              },
+              "end": {
+                "line": 27,
+                "column": 6
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 20,
+              "column": 9
+            },
+            "end": {
+              "line": 26,
+              "column": 10
+            }
+          },
+          "replacement": "Ok(())",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__inventory.rs_line_20_col_9.log",
+      "summary": "CaughtMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.201021141,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050863171,
+          "process_status": {
+            "Failure": 101
+          },
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/main.rs",
+          "function": {
+            "function_name": "main",
+            "return_type": "",
+            "span": {
+              "start": {
+                "line": 8,
+                "column": 1
+              },
+              "end": {
+                "line": 210,
+                "column": 2
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 9,
+              "column": 5
+            },
+            "end": {
+              "line": 209,
+              "column": 31
+            }
+          },
+          "replacement": "()",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__main.rs_line_9_col_5.log",
+      "summary": "MissedMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.200849606,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050754894,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/inventory.rs",
+          "function": {
+            "function_name": "Inventory::get_index",
+            "return_type": "-> Option<usize>",
+            "span": {
+              "start": {
+                "line": 160,
+                "column": 5
+              },
+              "end": {
+                "line": 164,
+                "column": 6
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 161,
+              "column": 9
+            },
+            "end": {
+              "line": 163,
+              "column": 73
+            }
+          },
+          "replacement": "Some(1)",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__inventory.rs_line_161_col_9_001.log",
+      "summary": "CaughtMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.200844053,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050907815,
+          "process_status": {
+            "Failure": 101
+          },
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/inventory.rs",
+          "function": {
+            "function_name": "Inventory::get_index",
+            "return_type": "-> Option<usize>",
+            "span": {
+              "start": {
+                "line": 160,
+                "column": 5
+              },
+              "end": {
+                "line": 164,
+                "column": 6
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 161,
+              "column": 9
+            },
+            "end": {
+              "line": 163,
+              "column": 73
+            }
+          },
+          "replacement": "Some(0)",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__inventory.rs_line_161_col_9_002.log",
+      "summary": "CaughtMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.201075131,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050880501,
+          "process_status": {
+            "Failure": 101
+          },
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/lib.rs",
+          "function": {
+            "function_name": "get_command",
+            "return_type": "-> String",
+            "span": {
+              "start": {
+                "line": 55,
+                "column": 1
+              },
+              "end": {
+                "line": 64,
+                "column": 2
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 56,
+              "column": 5
+            },
+            "end": {
+              "line": 63,
+              "column": 10
+            }
+          },
+          "replacement": "String::new()",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__lib.rs_line_56_col_5_001.log",
+      "summary": "MissedMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.20096451,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050665502,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "Mutant": {
+          "package": "book_store",
+          "file": "src/inventory.rs",
+          "function": {
+            "function_name": "Inventory::remove",
+            "return_type": "",
+            "span": {
+              "start": {
+                "line": 29,
+                "column": 5
+              },
+              "end": {
+                "line": 31,
+                "column": 6
+              }
+            }
+          },
+          "span": {
+            "start": {
+              "line": 30,
+              "column": 9
+            },
+            "end": {
+              "line": 30,
+              "column": 30
+            }
+          },
+          "replacement": "()",
+          "genre": "FnValue"
+        }
+      },
+      "log_path": "/home/tode/Documents/book_store/packages/book_store/mutants.out/log/src__inventory.rs_line_30_col_9.log",
+      "summary": "CaughtMutant",
+      "phase_results": [
+        {
+          "phase": "Build",
+          "duration": 0.201183057,
+          "process_status": "Success",
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "build",
+            "--tests",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        },
+        {
+          "phase": "Test",
+          "duration": 0.050829025,
+          "process_status": {
+            "Failure": 101
+          },
+          "argv": [
+            "/home/tode/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo",
+            "test",
+            "--manifest-path",
+            "/tmp/cargo-mutants-book_store-jOhHXK.tmp/Cargo.toml"
+          ]
+        }
+      ]
+    }
+  ],
+  "total_mutants": 14,
+  "missed": 5,
+  "caught": 8,
+  "timeout": 0,
+  "unviable": 1,
+  "success": 0,
+  "failure": 0
+}

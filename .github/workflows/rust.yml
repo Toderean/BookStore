@@ -1,74 +1,72 @@
-name: Rust
+name: Publish Packages
 
-on:
-  push:
-    branches:
-      - "main"
-  pull_request:
-    branches:
-      - "main"
-
-env:
-  CARGO_TERM_COLOR: always
+on: push
 
 jobs:
-  build:
-
+  check_version_change:
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        test_name:
-          - tests::tests::test_add_book
-          - tests::tests::test_add_max_capacity
-          - tests::tests::test_display_books
-          - tests::tests::test_get_index
-          - tests::tests::test_non_existing_book
-          - tests::tests::test_sell_book
-          - tests::tests::test_sell_book_2
-          - tests::tests::test_invalid_json_file
-          - tests::tests::test_invalid_json_file_2
-          - tests::tests::test_update_book
-          - tests::tests::test_remove_book
-          - tests::tests::test_sell_more_than_available
-          - tests::tests::test_sell_more_than_available_2
-
+    outputs:
+      CHANGED: ${{steps.check_version.outputs.changed}}
+      VERSION: ${{steps.check_version.outputs.version}}
+      PATH: ${{steps.set_path.outputs.changed_package_path}}
     steps:
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #V.4.1.1
-    - name: Install nextest
-      run: cargo install cargo-nextest --locked
-    - name: Run ${{ matrix.test_name }} test
-      run: cargo nextest run ${{ matrix.test_name }} --verbose
-
-  check-jobs:
-    name: Check Jobs
-    runs-on: ubuntu-latest
-    if: always()
-    needs:
-      - build
-    steps:
-      - name: Check Jobs
-        id: check_jobs
-        uses: stacks-network/actions/check-jobs-status@main
+      - name: Checkout Code
+        id: checkout_code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
-          jobs: ${{ toJson(needs) }}
-          summary_print: "true"
-  merge-check:
-    runs-on: ubuntu-latest
+          fetch-depth: 0
 
-    needs: build
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      # Add your job that checks if the build was successful
-
-      # For example, if using a script:
-      - name: Check Build Status
+      - name: Set Path
+        id: set_path
         run: |
-          if [ ${{ job.status }} != 'success' ]; then
-            echo "Build failed, PR cannot be merged."
-            exit 1
-          fi
+          # Get the paths of changed files
+          changes_paths=$(git diff-tree --no-commit-id --name-only -r "${{ github.sha }}" | awk -F'/' '{print $1"/"$2}')
+
+          # Manifest names list
+          manifest_names=("package.json")
+
+          # Save the manifest path of the changed package in GitHub env and exit without error
+          for path in ${changes_paths}; do
+            if [[ $path == packages/* ]]; then
+              for manifest in "${manifest_names[@]}"; do
+                if [[ -f $path/$manifest ]]; then
+                  echo "changed_package_path=${path}/${manifest}" >> "$GITHUB_OUTPUT"
+                  echo "package_changed=true" >> "$GITHUB_OUTPUT"
+                  exit 0
+                fi
+              done
+            fi
+          done
+
+          # If we haven't exited yet, no package was changed
+          echo "No package was changed in this commit!"
+          echo "package_changed=false" >> "$GITHUB_OUTPUT"
+
+      - name: Check Version
+        id: check_version
+        if: ${{ steps.set_path.outputs.package_changed == 'true' }}
+        uses: EndBug/version-check@53c9309fefac91a21f852d5ca69f33878280d2f5
+        with:
+          file-name: ${{ steps.set_path.outputs.changed_package_path }}
+
+  publish_node:
+    runs-on: ubuntu-latest
+    needs: check_version_change
+    if: ${{needs.check_version_change.outputs.CHANGED == 'true'}}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4 #v4.0.2
+        with:
+          node-version: '18.19.1'
+          registry-url: 'https://registry.npmjs.org/'
+      
+      - name: Publish
+        run: |
+          cd "$(echo '${{ needs.check_version_change.outputs.PATH}}' | awk -F'/' '{print $1"/"$2}')"
+          npm ci
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}

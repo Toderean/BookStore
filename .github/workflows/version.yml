@@ -1,0 +1,39 @@
+# Versioning tool - in order to recognize when the version of a package/crate changed
+# Contexts link (useful to find github pre-set variables to get commits, changes etc.): https://docs.github.com/en/actions/learn-github-actions/contexts
+#
+# Good-to-know:
+# - actions/checkout has an input 'fetch-depth: 0' to get all commits
+# - only for default branch (main)
+#
+# Task 1:
+# - Hardcode 2 variables with a given path (changes_path=crates/book_store) and a given manifest name (manifest_name=Cargo.toml)
+# - Read the version from changes_path/manifest_name
+# - Go through older commits until you find changes in changes_path
+# - Read the version from the older commit found
+# - Check that new_commit is greater than old_commit - x.y.z > a.b.c if (x > a || y > b || z > c) - if not, exit 1 and print that the version is smaller
+# - If all good, package_updated=true
+#
+# Test Task 1:
+# - Print old version, new version, changes_path/manifest_name, package_updated
+# - Add a .txt file in book_store and change that one with 1-2 commits without changing Cargo.toml, check that package_updated=false
+# - Change Cargo.toml to 0.2.0, check that package_updated=true
+# - Change Cargo.toml to 0.2.1, check that package_updated=true
+# - Change Cargo.toml to 1.0.0, check that package_updated=true
+# - Change Cargo.toml to 0.3.0, check that package_updated=false and check that it exits with 1 and prints that version is invalid (smaller than before)
+#
+# Task 2:
+# - You'll need to change step 1 of task 1 - don't hardcode values anymore
+# - Get the changes_path from the commit directly - save the changes_path dynamically, and set manifest_name by the parent folder:
+#   - crates -> manifest_name=Cargo.toml
+#   - packages -> manifest_name=package.json
+#
+# Test Task 2:
+# - Same as test task 1, but on more packages/crates, and do changes on different packages on concurrent commits, eg:
+#   - Change/create .txt in crates/book_store
+#   - Change/create .txt in crates/test_crate_1
+#   - Change/create .txt in packages/good_one
+#   - Update version in book_store, then in test_crate_1, then good_one etc.
+#
+# More TBD
+
+
